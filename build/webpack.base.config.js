@@ -31,9 +31,21 @@ module.exports = {
     app: PATHS.src
   },
   output: {
-    filename: `${PATHS.assets}js/[name].js`,
+    filename: `${PATHS.assets}js/[name].[contenthash].js`,
     path: PATHS.dist,
-    publicPath: "/dist"
+    publicPath: "/"
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          name: "vendors",
+          test: /node_modules/,
+          chunks: "all",
+          enforce: true
+        }
+      }
+    }
   },
   module: {
     rules: [
@@ -51,7 +63,7 @@ module.exports = {
       {
         test: /\.s?css$/,
         use: [
-          "style-loader",
+          { loader: "style-loader" },
           MiniCssExtractPlugin.loader,
           {
             loader: "css-loader",
@@ -69,7 +81,7 @@ module.exports = {
             loader: "postcss-loader",
             options: {
               sourceMap: true,
-              config: { path: `${PATHS.src}/js/postcss.config.js` }
+              config: { path: `postcss.config.js` }
             }
           }
         ]
